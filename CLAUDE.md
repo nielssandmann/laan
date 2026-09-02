@@ -34,6 +34,11 @@ icon/reset, keep the `<title>`, font links, page `<style>` and everything in the
 
 then publish that file passing the existing artifact URL, so the link stays the same.
 
+Tested, so don't retry it: publishing `index.html` as-is does not fail loudly — it nests
+the document inside the host's own `<html>/<head>/<body>`, and the artifact loses its name,
+falling back to the filename ("index") instead of "Afdragsfrihed eller ej". The fragment
+step is what keeps the title. Restoring is one republish of the fragment.
+
 ## Model conventions
 
 These are decisions layered on top of the spec. Changing one changes every headline
