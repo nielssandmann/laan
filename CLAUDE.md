@@ -5,34 +5,34 @@ mortgage over a chosen horizon: keeping the existing amortizing realkreditlån, 
 converting to a fully interest-only (afdragsfrit) loan — optionally withdrawing equity
 and investing part of the freed cash flow.
 
-Published as an Artifact: https://claude.ai/code/artifact/96c72ed9-d120-49bc-96ec-1a52f3863175
-
 ## Files
 
-- `realkredit-omlaegning.html` — the whole application: markup, CSS and JS in one file.
-  No build step, no package manager, no external JS. Open it directly in a browser.
-  The only external resource is the Google Fonts stylesheet.
+- `index.html` — the whole application and the only source file: a complete, standalone
+  HTML document with markup, CSS and JS inline. No build step, no package manager, no
+  external JS. Open it directly in a browser; GitHub Pages serves it as-is at
+  https://nielssandmann.github.io/laan/. Pushing to `main` redeploys.
 - `realkredit-omlaegning-spec.md` — the original specification. Its **hard constraints**
   section is authoritative for the model; do not "fix" behaviour that it mandates.
 
-The file is written to be publishable as an Artifact, so it deliberately has no
-`<!doctype>`, `<html>`, `<head>` or `<body>` wrapper — `<title>`, the font `<link>` and
-`<style>` sit at the top of the file. It still renders correctly as a local file.
-Republish with the Artifact tool using the same file path to keep the URL.
-
-## Hosting
-
-`index.html` is served by GitHub Pages at https://nielssandmann.github.io/laan/ and is
-**generated — never edit it**. Edit `realkredit-omlaegning.html`, then run:
-
-    ./build-index.sh
-
-and commit both. The script wraps the artifact-shaped source in a real document: the
-source's `<title>`, font links and `<style>` move into a proper `<head>`, and the head
-also restores the two things the Artifact host normally injects and the page relies on —
+Two rules the page depends on live in the `<head>` and are easy to delete by accident:
 the viewport meta (without it the page loads zoomed out on a phone) and
-`[hidden]{display:none!important}` (the plain UA rule loses to `.card-body`'s
-`display:flex`, so the yearly table would sit open on load). Pushing to `main` redeploys.
+`[hidden]{display:none!important}` — the plain UA rule for `hidden` loses to
+`.card-body`'s `display:flex`, so the yearly table would sit open on load.
+
+### Republishing the Artifact
+
+The page is also published as an Artifact:
+https://claude.ai/code/artifact/96c72ed9-d120-49bc-96ec-1a52f3863175
+
+The Artifact host wraps whatever it is given in its own `<!doctype>/<head>/<body>`, so it
+wants a fragment, not a document. Do not keep a second copy in the repo for this — derive
+the fragment into a temp file at publish time (drop the wrapper's own charset/viewport/
+icon/reset, keep the `<title>`, font links, page `<style>` and everything in the body):
+
+    { sed -n '/^<title>/,/^<\/head>$/p' index.html | sed '$d'; \
+      sed -e '1,/^<body>$/d' -e '/^<\/body>$/,$d' index.html; } > /tmp/fragment.html
+
+then publish that file passing the existing artifact URL, so the link stays the same.
 
 ## Model conventions
 
