@@ -1,0 +1,799 @@
+<title>Afdragsfrihed eller ej</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  color-scheme: light;
+  --ground:#F2F5F4; --surface:#FBFCFC; --surface-2:#EAEFEE;
+  --ink:#10201E; --ink-2:#556966; --ink-3:#7C8E8B;
+  --rule:#D9E2E0; --rule-2:#C6D3D0;
+  --a:#008573; --b:#BE5518;
+  --a-soft:rgba(0,133,115,.13); --b-soft:rgba(190,85,24,.13);
+  --warn-bg:#FCF3E7; --warn-ink:#7A4A12; --warn-rule:#E8CFA9;
+  --shadow:0 1px 2px rgba(16,32,30,.05), 0 8px 24px -16px rgba(16,32,30,.18);
+  --serif:"Newsreader",Georgia,"Times New Roman",serif;
+  --sans:"IBM Plex Sans","Helvetica Neue",Arial,sans-serif;
+  --mono:"IBM Plex Mono","SFMono-Regular",Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme: dark;
+    --ground:#141A19; --surface:#1B2322; --surface-2:#222C2A;
+    --ink:#EDF2F1; --ink-2:#9DB0AD; --ink-3:#7C8E8B;
+    --rule:#2A3634; --rule-2:#384744;
+    --a:#12A08A; --b:#D06E32;
+    --a-soft:rgba(18,160,138,.16); --b-soft:rgba(208,110,50,.16);
+    --warn-bg:#2A2117; --warn-ink:#E8C48D; --warn-rule:#4A3A22;
+    --shadow:0 1px 2px rgba(0,0,0,.3), 0 8px 24px -16px rgba(0,0,0,.6);
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme: dark;
+  --ground:#141A19; --surface:#1B2322; --surface-2:#222C2A;
+  --ink:#EDF2F1; --ink-2:#9DB0AD; --ink-3:#7C8E8B;
+  --rule:#2A3634; --rule-2:#384744;
+  --a:#12A08A; --b:#D06E32;
+  --a-soft:rgba(18,160,138,.16); --b-soft:rgba(208,110,50,.16);
+  --warn-bg:#2A2117; --warn-ink:#E8C48D; --warn-rule:#4A3A22;
+  --shadow:0 1px 2px rgba(0,0,0,.3), 0 8px 24px -16px rgba(0,0,0,.6);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1180px;margin:0 auto;padding:40px 24px 72px}
+header.top{display:flex;flex-direction:column;gap:6px;padding-bottom:28px;border-bottom:1px solid var(--rule);margin-bottom:28px}
+.eyebrow{font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);font-weight:500}
+h1{font-family:var(--serif);font-weight:400;font-size:clamp(30px,4.4vw,46px);line-height:1.08;letter-spacing:-.015em;margin:0;text-wrap:balance}
+h1 em{font-style:italic;color:var(--ink-2)}
+.lede{max-width:62ch;color:var(--ink-2);margin:8px 0 0;font-size:15.5px}
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:32px;align-items:start}
+.layout>*,.split>*,.stack>*,.card,.card-body,figure,.plotwrap{min-width:0}
+@media (max-width:900px){.layout{grid-template-columns:1fr}.rail{order:-1}}
+.rail{display:flex;flex-direction:column;gap:14px;position:sticky;top:20px}
+@media (max-width:900px){.rail{position:static}}
+.card{background:var(--surface);border:1px solid var(--rule);border-radius:10px;box-shadow:var(--shadow)}
+.card>h2,.card>h3{margin:0;padding:14px 16px 0}
+h2{font-family:var(--serif);font-weight:500;font-size:19px;letter-spacing:-.01em}
+h3{font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);font-weight:600}
+.card-body{padding:14px 16px 16px;display:flex;flex-direction:column;gap:14px}
+/* controls */
+.ctl{display:flex;flex-direction:column;gap:5px}
+.ctl-head{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.ctl label{font-size:13px;color:var(--ink-2)}
+.ctl output{font-family:var(--mono);font-size:13.5px;font-variant-numeric:tabular-nums;color:var(--ink);font-weight:500}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:20px;background:transparent;margin:0}
+input[type=range]::-webkit-slider-runnable-track{height:4px;border-radius:2px;background:var(--rule-2)}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:16px;height:16px;margin-top:-6px;border-radius:50%;background:var(--surface);border:2px solid var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.2);cursor:pointer}
+input[type=range]::-moz-range-track{height:4px;border-radius:2px;background:var(--rule-2)}
+input[type=range]::-moz-range-thumb{width:14px;height:14px;border-radius:50%;background:var(--surface);border:2px solid var(--ink);cursor:pointer}
+input[type=range]:focus-visible{outline:2px solid var(--b);outline-offset:4px;border-radius:4px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px 12px}
+.field{display:flex;flex-direction:column;gap:3px}
+.field label{font-size:12px;color:var(--ink-2)}
+.field input[type=number]{font-family:var(--mono);font-size:13.5px;font-variant-numeric:tabular-nums;padding:6px 8px;border:1px solid var(--rule-2);border-radius:6px;background:var(--ground);color:var(--ink);width:100%}
+.field input:focus-visible{outline:2px solid var(--b);outline-offset:1px}
+.toggle{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink-2)}
+details.card>summary{padding:12px 16px;cursor:pointer;font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);font-weight:600;list-style:none;display:flex;justify-content:space-between;align-items:center}
+details.card>summary::-webkit-details-marker{display:none}
+details.card>summary::after{content:"+";font-size:15px;letter-spacing:0}
+details.card[open]>summary::after{content:"–"}
+details.card>summary:focus-visible{outline:2px solid var(--b);outline-offset:-2px;border-radius:10px}
+/* headline */
+.headline{padding:22px 24px 24px;display:flex;flex-direction:column;gap:4px}
+.headline .q{font-size:13px;color:var(--ink-2)}
+.big{font-family:var(--mono);font-weight:500;font-size:clamp(30px,5.2vw,46px);letter-spacing:-.02em;font-variant-numeric:tabular-nums;line-height:1.05}
+.who{display:flex;align-items:center;gap:8px;font-size:13.5px;color:var(--ink-2);margin-top:2px}
+.chip{width:10px;height:10px;border-radius:2px;flex:none}
+.sumwrap{display:grid;grid-template-columns:minmax(220px,1fr) minmax(0,max-content);gap:16px 30px;align-items:start;margin-top:16px;padding-top:16px;border-top:1px solid var(--rule)}
+@media (max-width:900px){.sumwrap{grid-template-columns:minmax(0,1fr)}}
+#bars{display:flex;flex-direction:column;gap:14px}
+.brow{display:flex;flex-direction:column;gap:4px}
+.bname{font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;font-weight:600}
+.bline{display:grid;grid-template-columns:minmax(0,1fr) max-content;gap:12px;align-items:center}
+.btrack{position:relative;height:24px}
+.bzero{position:absolute;top:-4px;bottom:-4px;border-left:1px dashed var(--rule-2)}
+.bseg{position:absolute;top:0;height:100%;border-radius:3px}
+.bseg.solid{background:var(--c)}
+.bseg.hatch{background:repeating-linear-gradient(45deg,var(--c) 0 2.5px,transparent 2.5px 6px),var(--cs)}
+.bseg.tint{background:var(--cs)}
+@supports (background:color-mix(in oklab,red,white)){.bseg.tint{background:color-mix(in oklab,var(--c) 42%,var(--surface))}}
+.btick{position:absolute;top:-5px;height:34px;width:2px;border-radius:1px;background:var(--ink)}
+.bzerolab{position:absolute;top:100%;margin-top:5px;transform:translateX(-50%);font-family:var(--mono);font-size:10px;color:var(--ink-3)}
+.brow.lastrow{padding-bottom:16px}
+.btotal{font-family:var(--mono);font-size:13px;font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap}
+.barlegend{display:flex;gap:7px 14px;flex-wrap:wrap;margin:7px 0 0;font-size:11px;color:var(--ink-3)}
+.barlegend span{display:inline-flex;align-items:center;gap:6px}
+.sw{width:13px;height:11px;border-radius:2px;flex:none}
+.sw.solid{background:var(--ink-3)}
+.sw.hatch{background:repeating-linear-gradient(45deg,var(--ink-3) 0 2px,transparent 2px 5px)}
+.sw.tint{background:var(--rule-2)}
+.sw.tick{width:2px;height:14px;border-radius:1px;background:var(--ink)}
+.sumtab{border-collapse:collapse;font-variant-numeric:tabular-nums}
+.sumtab th{font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);font-weight:600;padding:0 0 5px 12px;text-align:right;border:0}
+.sumtab th:first-child{padding-left:0}
+.sumtab td{font-family:var(--mono);font-size:12.5px;padding:3px 0 3px 12px;text-align:right;border:0}
+.sumtab td:first-child{font-family:var(--sans);text-align:left;padding-left:0;color:var(--ink-2);white-space:nowrap}
+.sumtab td.tot{font-weight:500;color:var(--ink)}
+.sumtab tr.diff td{border-top:1px solid var(--rule);padding-top:7px}
+.sumtab tr.diff td:first-child{color:var(--ink)}
+@media (max-width:900px){.sumtab th,.sumtab td{padding-left:9px;font-size:12.5px}.sumtab th:first-child,.sumtab td:first-child{padding-left:0}.dot2{margin-right:5px}}
+.dot2{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:7px}
+.barlab{fill:var(--ink-2);font-family:var(--sans);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase}
+.bartot{fill:var(--ink);font-family:var(--mono);font-size:11px;font-weight:500}
+.barzero{stroke:var(--rule-2);stroke-width:1;stroke-dasharray:3 3}
+.bartick{stroke:var(--ink);stroke-width:2}
+.seg{display:inline-flex;border:1px solid var(--rule-2);border-radius:7px;overflow:hidden}
+.segbtn{font-family:var(--sans);font-size:12px;padding:5px 10px;border:0;background:transparent;color:var(--ink-2);cursor:pointer}
+.segbtn+.segbtn{border-left:1px solid var(--rule-2)}
+.segbtn[aria-pressed="true"]{background:var(--surface-2);color:var(--ink);font-weight:500}
+.segbtn:focus-visible{outline:2px solid var(--b);outline-offset:-2px}
+table.dense th,table.dense td{padding:6px 9px;font-size:12px}
+table.dense thead tr:first-child th{border-bottom:1px solid var(--rule-2)}
+th.grp{text-align:center;letter-spacing:.08em}
+th.grp.a{color:var(--a)} th.grp.b{color:var(--b)}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(162px,1fr));background:var(--surface);border-top:1px solid var(--rule);border-radius:0 0 10px 10px}
+.tile{padding:13px 16px 15px;display:flex;flex-direction:column;gap:2px;border-left:1px solid var(--rule)}
+.tile:first-child{border-left:none}
+.tile .k{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);font-weight:600}
+.tile .v{font-family:var(--mono);font-size:15.5px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.tile .s{font-size:12px;color:var(--ink-3)}
+/* chart */
+.chart-head{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;padding:14px 16px 0}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12.5px;color:var(--ink-2)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.swatch{width:14px;height:3px;border-radius:2px;flex:none}
+figure{margin:0;padding:6px 8px 14px}
+svg.plot{display:block;width:100%;height:auto;overflow:visible}
+.gridline{stroke:var(--rule);stroke-width:1}
+.zeroline{stroke:var(--rule-2);stroke-width:1;stroke-dasharray:3 3}
+.axis{fill:var(--ink-3);font-family:var(--mono);font-size:10.5px}
+.serie{fill:none;stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
+.evt{stroke:var(--ink-3);stroke-width:1;stroke-dasharray:2 3}
+.evtlab{fill:var(--ink-3);font-family:var(--sans);font-size:10px;letter-spacing:.04em;text-transform:uppercase}
+.endlab{font-family:var(--mono);font-size:11px;font-weight:500}
+.cross{stroke:var(--ink-2);stroke-width:1}
+.dot{stroke:var(--surface);stroke-width:2}
+.tip{position:absolute;pointer-events:none;background:var(--surface);border:1px solid var(--rule-2);border-radius:8px;padding:8px 10px;box-shadow:var(--shadow);font-size:12.5px;min-width:180px;opacity:0;transition:opacity .1s}
+.tip .ty{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);font-weight:600;margin-bottom:4px}
+.tip .row{display:flex;justify-content:space-between;gap:14px;font-variant-numeric:tabular-nums}
+.tip .row b{font-family:var(--mono);font-weight:500}
+.tip .row.d{border-top:1px solid var(--rule);margin-top:4px;padding-top:4px}
+.plotwrap{position:relative}
+/* tables */
+table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums}
+th,td{text-align:right;padding:7px 10px;border-bottom:1px solid var(--rule);font-size:13px}
+th:first-child,td:first-child{text-align:left}
+thead th{font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-3);font-weight:600}
+td.num{font-family:var(--mono)}
+tbody tr:last-child td{border-bottom:none}
+.scroll{overflow-x:auto}
+.btn{font-family:var(--sans);font-size:12.5px;padding:5px 11px;border:1px solid var(--rule-2);background:var(--ground);color:var(--ink-2);border-radius:6px;cursor:pointer}
+.btn:hover{color:var(--ink);border-color:var(--ink-3)}
+.btn:focus-visible{outline:2px solid var(--b);outline-offset:2px}
+.warn{display:flex;gap:10px;background:var(--warn-bg);border:1px solid var(--warn-rule);color:var(--warn-ink);border-radius:8px;padding:11px 13px;font-size:13px}
+.warn b{font-weight:600}
+.warn svg{flex:none;margin-top:2px}
+.stack{display:flex;flex-direction:column;gap:14px}
+.split{display:grid;grid-template-columns:1.4fr 1fr;gap:14px}
+@media (max-width:700px){.split{grid-template-columns:1fr}}
+footer.notes{margin-top:32px;padding-top:20px;border-top:1px solid var(--rule);color:var(--ink-3);font-size:12.5px;max-width:78ch}
+footer.notes h3{margin:0 0 8px}
+footer.notes ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:5px}
+footer.notes code{font-family:var(--mono);font-size:11.5px}
+.hint{font-size:12px;color:var(--ink-3)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap">
+<header class="top">
+  <p class="eyebrow">Realkredit · scenarieberegner</p>
+  <h1>Afdragsfrihed eller ej — <em>hvad står du med bagefter?</em></h1>
+  <p class="lede">To forløb simuleres måned for måned: at beholde det nuværende annuitetslån, eller at lægge om til et
+  fuldt afdragsfrit lån, eventuelt med ekstra udbetaling, og investere en del af den frigjorte likviditet.
+  Formuen er opgjort som investeringer efter skat minus restgæld — boligens værdi indgår ikke.</p>
+</header>
+
+<div class="layout">
+  <main class="stack">
+    <section class="card" aria-labelledby="hl">
+      <div class="headline">
+        <p class="q" id="hl">Samlet forskel efter <span id="hzLabel">30</span> år — formue og opsparing tilsammen</p>
+        <div class="big" id="diff">–</div>
+        <div class="who"><span class="chip" id="whoChip"></span><span id="whoText"></span></div>
+        <div class="sumwrap">
+          <div>
+            <div id="bars" aria-hidden="true"></div>
+            <p class="barlegend" id="barsdesc">
+              <span><i class="sw hatch"></i>Opsparing</span>
+              <span><i class="sw tint"></i>Investeret</span>
+              <span><i class="sw solid"></i>Gæld</span>
+              <span><i class="sw tick"></i>Total</span>
+            </p>
+          </div>
+          <div class="scroll">
+            <table class="sumtab">
+              <thead><tr><th>Ved horisonten</th><th>Opsparing</th><th>Investeret</th><th>Gæld</th><th>Total</th></tr></thead>
+              <tbody id="sumBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="tiles">
+        <div class="tile"><span class="k">Ydelse i dag</span><span class="v" id="tYdelse">–</span><span class="s" id="tYdelseSub">annuitet, beregnet</span></div>
+        <div class="tile"><span class="k">Afdragsfri ydelse</span><span class="v" id="tPayB">–</span><span class="s" id="tPayBSub">rente + bidrag</span></div>
+        <div class="tile"><span class="k">Frigjort pr. måned</span><span class="v" id="tFreed">–</span><span class="s">efter rentefradrag, år 1</span></div>
+        <div class="tile"><span class="k">Balancepunkt</span><span class="v" id="tBE">–</span><span class="s" id="tBESub">hvor forløbene krydser</span></div>
+      </div>
+    </section>
+
+    <div id="warnings" class="stack" aria-live="polite"></div>
+
+    <section class="card">
+      <div class="chart-head">
+        <h2 id="chartTitle">Formue og opsparing over tid</h2>
+        <div class="seg" role="group" aria-label="Hvad vises i grafen">
+          <button class="segbtn" data-m="tot" aria-pressed="true">Formue + opsparing</button>
+          <button class="segbtn" data-m="net" aria-pressed="false">Kun formue</button>
+        </div>
+        <div class="legend">
+          <span><i class="swatch" style="background:var(--a)"></i>Behold lånet</span>
+          <span><i class="swatch" style="background:var(--b)"></i>Afdragsfrit</span>
+        </div>
+      </div>
+      <figure>
+        <div class="plotwrap">
+          <svg class="plot" id="plot" viewBox="0 0 760 340" role="img" aria-labelledby="plotdesc"></svg>
+          <p id="plotdesc" class="hint" style="padding:0 8px">Nettoformue for begge forløb hen over horisonten. Det udfyldte felt viser forskellen, farvet efter hvilket forløb der fører.</p>
+          <div class="tip" id="tip"></div>
+        </div>
+      </figure>
+    </section>
+
+    <div class="split">
+      <section class="card">
+        <h3 style="padding:14px 16px 0">Afdragsfrit forløb, opdelt</h3>
+        <div class="card-body">
+          <div class="scroll"><table class="dense">
+            <thead><tr><th>År</th><th>− Gæld</th><th>+ Investering</th><th>= Formue</th><th>Renter + bidrag i året</th><th>Indbetalt i året</th></tr></thead>
+            <tbody id="splitBody"></tbody>
+          </table></div>
+          <p class="hint">Alle beløb i kroner. Gæld dækker både restgælden på det afdragsfrie lån og en eventuel kontant gæld efter indfrielsen.</p>
+        </div>
+      </section>
+      <section class="card">
+        <h3 style="padding:14px 16px 0">Renter, bidrag og opsparing</h3>
+        <div class="card-body">
+          <div class="scroll"><table>
+            <thead><tr><th></th><th>Behold</th><th>Afdragsfrit</th></tr></thead>
+            <tbody id="costBody"></tbody>
+          </table></div>
+          <p class="hint">Alle beløb i kroner, akkumuleret over horisonten.</p>
+        </div>
+      </section>
+    </div>
+
+    <section class="card">
+      <div class="chart-head">
+        <h3>Årlige tal</h3>
+        <button class="btn" id="tblBtn" aria-expanded="false" aria-controls="tblBox">Vis tabel</button>
+      </div>
+      <div class="card-body" id="tblBox" hidden>
+        <p class="hint" style="margin:0">Alle beløb i kroner.</p>
+        <div class="scroll"><table class="dense">
+          <thead>
+            <tr><th rowspan="2">År</th><th class="grp a" colspan="6">Behold lånet</th><th class="grp b" colspan="6">Afdragsfrit</th><th colspan="2">Forskel</th></tr>
+            <tr>
+              <th>Ydelse</th><th>Renter + bidrag</th><th>Rentefradrag</th><th>Indbetalt</th><th>Indbetalt i alt</th><th>Formue</th>
+              <th>Ydelse</th><th>Renter + bidrag</th><th>Rentefradrag</th><th>Indbetalt</th><th>Indbetalt i alt</th><th>Formue</th>
+              <th>Formue</th><th>Samlet</th>
+            </tr>
+          </thead>
+          <tbody id="tblBody"></tbody>
+        </table></div>
+      </div>
+    </section>
+  </main>
+
+  <aside class="rail">
+    <section class="card">
+      <h3 style="padding:14px 16px 0">Beslutningen</h3>
+      <div class="card-body">
+        <div class="ctl">
+          <div class="ctl-head"><label for="termB">Afdragsfri periode <span class="hint">= hele løbetiden</span></label><output id="termBOut"></output></div>
+          <input type="range" id="termB" min="1" max="30" step="0.5" value="30">
+        </div>
+        <div class="ctl">
+          <div class="ctl-head"><label for="udb">Ekstra udbetaling</label><output id="udbOut"></output></div>
+          <input type="range" id="udb" min="0" max="2000000" step="10000" value="0">
+        </div>
+        <div class="ctl">
+          <div class="ctl-head"><label for="share">Andel der investeres</label><output id="shareOut"></output></div>
+          <input type="range" id="share" min="0" max="100" step="1" value="60">
+        </div>
+        <div class="ctl">
+          <div class="ctl-head"><label for="hz">Horisont</label><output id="hzOut"></output></div>
+          <input type="range" id="hz" min="1" max="40" step="1" value="30">
+        </div>
+      </div>
+    </section>
+
+    <details class="card" open>
+      <summary>Nuværende lån</summary>
+      <div class="card-body">
+        <div class="grid2">
+          <div class="field"><label for="rest">Restgæld, kr</label><input type="number" id="rest" value="485000" step="10000" min="0"></div>
+          <div class="field"><label for="termA">Restløbetid, år</label><input type="number" id="termA" value="2" step="1" min="1" max="40"></div>
+          <div class="field"><label for="renteA">Rente, % p.a.</label><input type="number" id="renteA" value="0.5" step="0.05" min="0"></div>
+          <div class="field"><label for="bidragA">Bidragssats, %</label><input type="number" id="bidragA" value="0.66" step="0.05" min="0"></div>
+          <div class="field" style="grid-column:1/-1"><label for="ydelseU">Din ydelse i dag, kr/md <span class="hint">(kontrol, valgfri)</span></label><input type="number" id="ydelseU" step="100" min="0" placeholder="beregnes"></div>
+        </div>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary>Nyt lån</summary>
+      <div class="card-body">
+        <div class="grid2">
+          <div class="field"><label for="renteB">Rente, % p.a.</label><input type="number" id="renteB" value="3" step="0.05" min="0"></div>
+          <div class="field"><label for="bidragB">Bidragssats, %</label><input type="number" id="bidragB" value="0.6" step="0.05" min="0"></div>
+          <div class="field" style="grid-column:1/-1"><label for="costs">Omkostninger ved omlægning, kr</label><input type="number" id="costs" value="15000" step="1000" min="0"></div>
+        </div>
+        <label class="toggle"><input type="checkbox" id="financed" checked> Omkostninger lægges oven i lånet</label>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary>Forudsætninger</summary>
+      <div class="card-body">
+        <div class="grid2">
+          <div class="field"><label for="ret">Afkast, % p.a.</label><input type="number" id="ret" value="8" step="0.25" min="0"></div>
+          <div class="field"><label for="invtax">Skat af afkast, %</label><input type="number" id="invtax" value="27" step="1" min="0" max="100"></div>
+          <div class="field"><label for="fradrag">Rentefradrag, %</label><input type="number" id="fradrag" value="33" step="0.5" min="0" max="100"></div>
+          <div class="field"><label for="borrow">Lånerente ved underdækning, %</label><input type="number" id="borrow" value="8" step="0.5" min="0"></div>
+        </div>
+      </div>
+    </details>
+  </aside>
+</div>
+
+<footer class="notes">
+  <h3>Forudsætninger og forbehold</h3>
+  <ul>
+    <li>Alle ydelser er opgjort <b>efter rentefradrag</b>. <code>baseline</code> er den nuværende ydelse efter fradrag i måned 1 og holdes fast hele horisonten. Frigjort likviditet er <code>max(0, baseline − ydelse efter fradrag)</code>, og den investerede andel er den samme slider for begge forløb og for udbetalingen.</li>
+    <li>Det nuværende lån beregnes som en annuitet på <b>rente + bidrag</b>, så ydelsen er konstant. I virkeligheden beregnes bidrag typisk af restgælden oven på en renteannuitet, hvilket giver en let faldende ydelse.</li>
+    <li>Det nye lån er <b>100 % afdragsfrit i hele løbetiden</b> og indfries som et engangsbeløb ved udløb — finansieret ved salg fra investeringen, med skat af årets endnu ubeskattede gevinst. Rækker investeringen ikke, opstår en kontant gæld til den angivne lånerente, som afdrages af den frigjorte likviditet.</li>
+    <li>Afkast beskattes løbende hvert år (lagerprincip) med én flad sats, så formuen er opgjort efter skat på alle tidspunkter. Månedsrenter er <code>årlig sats / 12</code>.</li>
+    <li>Kurs 100 antages både ved optagelse af det nye lån og ved indfrielse af det gamle; kurstab og kursgevinstbeskatning indgår kun via den ene omkostningslinje.</li>
+    <li>Formuen er <b>investeringens værdi efter skat minus gælden</b>, og de to vises hver for sig i topsummen. <b>Investeret</b> er værdien af investeringen, ikke det indbetalte beløb — tabellerne viser det indbetalte som <b>Indbetalt</b>. <b>Gæld</b> dækker restgæld og en eventuel kontant gæld efter indfrielsen.</li>
+    <li><b>Opsparing</b> er den del af den frigjorte likviditet der ikke investeres — inklusive den del af udbetalingen der ikke investeres. Den indgår ikke i formuen, men lægges til i den samlede forskel.</li>
+    <li>Opsparing tælles til <b>nominel værdi</b> på det tidspunkt den modtages — den forrentes ikke og fremskrives ikke, mens formuen gør begge. En krone modtaget i år 2 vejer altså lige så meget som en krone modtaget i år 28.</li>
+    <li>Boligværdi og belåningsgrad indgår ikke. Afdragsfrihed kræver i praksis en belåningsgrad under 80 %, og det tjekker beregneren ikke.</li>
+  </ul>
+</footer>
+</div>
+
+<script>
+(function(){
+"use strict";
+const $ = id => document.getElementById(id);
+const nf0 = new Intl.NumberFormat('da-DK',{maximumFractionDigits:0});
+const nf1 = new Intl.NumberFormat('da-DK',{minimumFractionDigits:1,maximumFractionDigits:1});
+const MIN = '−';
+const kr  = n => nf0.format(Math.round(n)) + ' kr.';
+const krS = n => (n < -0.5 ? MIN : '') + nf0.format(Math.abs(Math.round(n))) + ' kr.';
+const krSigned = n => (n < -0.5 ? MIN : '+') + nf0.format(Math.abs(Math.round(n))) + ' kr.';
+const krN = n => (n < -0.5 ? MIN : '') + nf0.format(Math.abs(Math.round(n)));
+const krNSigned = n => (n < -0.5 ? MIN : '+') + nf0.format(Math.abs(Math.round(n)));
+function axisFmt(v){
+  const a = Math.abs(v), s = v < -0.5 ? MIN : '';
+  if (a >= 1e6) return s + nf1.format(a/1e6) + ' mio.';
+  if (a >= 1000) return s + nf0.format(Math.round(a/1000)) + ' t.';
+  return nf0.format(Math.round(a)) ? s + nf0.format(Math.round(a)) : '0';
+}
+const annuity = (P, r, n) => r === 0 ? P/n : P*r/(1 - Math.pow(1+r, -n));
+
+/* ---- model: pure, no DOM ------------------------------------------------ */
+function simulate(inp){
+  const share = inp.share/100, d = inp.fradrag/100, retm = inp.ret/100/12,
+        taxr = inp.invtax/100, brm = inp.borrow/100/12;
+  const rAr = inp.renteA/100/12, rAb = inp.bidragA/100/12, rA = rAr + rAb;
+  const nA = Math.max(1, Math.round(inp.termA*12));
+  const ydelseA = annuity(inp.rest, rA, nA);
+  const baseline = ydelseA - d*(inp.rest*rA);          // after-tax ydelse, month 1, fixed
+  const PB = inp.rest + inp.udb + (inp.financed ? inp.costs : 0);
+  const rBr = inp.renteB/100/12, rBb = inp.bidragB/100/12;
+  const payB = PB*(rBr + rBb), payBeff = payB*(1 - d);
+  const nB = Math.max(1, Math.round(inp.termB*12));
+  const H  = Math.max(1, Math.round(inp.horizon*12));
+
+  const mk = bal => ({bal, pf:0, ug:0, debt:0, cons:0, rente:0, bidrag:0, fradrag:0, inv:0, short:0});
+  const A = mk(inp.rest), B = mk(PB);
+  B.pf   = share*inp.udb;
+  B.inv  = share*inp.udb;
+  B.cons = (1-share)*inp.udb - (inp.financed ? 0 : inp.costs);
+
+  const net = s => s.pf - taxr*Math.max(0, s.ug) - s.bal - s.debt;
+  const snap = s => ({net:net(s), bal:s.bal, debt:s.debt, pf:s.pf - taxr*Math.max(0, s.ug),
+                      cons:s.cons, rente:s.rente, bidrag:s.bidrag, fradrag:s.fradrag, inv:s.inv});
+
+  function month(s, rr, rb, amortise, ydelse){
+    let interest = 0, bidrag = 0, pay = 0;
+    if (s.bal > 0.005){
+      interest = s.bal*rr; bidrag = s.bal*rb;
+      if (amortise){
+        pay = Math.min(ydelse, s.bal + interest + bidrag);
+        s.bal = s.bal + interest + bidrag - pay;
+        if (s.bal < 0.005) s.bal = 0;
+      } else { pay = interest + bidrag; }
+    }
+    const credit = d*(interest + bidrag);
+    s.rente += interest; s.bidrag += bidrag; s.fradrag += credit;
+    const eff = pay - credit;
+    const freed = Math.max(0, baseline - eff);
+    let put = share*freed;
+    s.cons += (1-share)*freed;
+    if (s.debt > 0){ const r = Math.min(s.debt, put); s.debt -= r; put -= r; }
+    s.pf += put; s.inv += put;
+    const gain = s.pf*retm; s.pf += gain; s.ug += gain;
+    if (s.debt > 0) s.debt *= (1 + brm);
+    return {pay, eff, freed, put};
+  }
+  function redeem(s){
+    const need = s.bal, avail = s.pf - taxr*Math.max(0, s.ug);
+    if (avail >= need && s.pf > 0){
+      const f = need/avail;
+      s.pf -= f*s.pf; s.ug -= f*s.ug;
+    } else {
+      s.short = need - Math.max(0, avail);
+      s.debt += s.short; s.pf = 0; s.ug = 0;
+    }
+    s.bal = 0;
+  }
+  function annualTax(s){
+    const t = taxr*Math.max(0, s.ug);
+    s.pf = Math.max(0, s.pf - t);
+    s.ug = 0;
+  }
+
+  const rows = [{t:0, netA:net(A), netB:net(B), totA:net(A) + A.cons, totB:net(B) + B.cons,
+                 balB:B.bal, debtB:B.debt, pfB:B.pf, payA:ydelseA, payB:payB, effA:baseline, effB:payBeff,
+                 a:snap(A), b:snap(B)}];
+  let redeemed = null;
+  for (let t = 1; t <= H; t++){
+    const ma = month(A, rAr, rAb, true, ydelseA);
+    const mb = month(B, rBr, rBb, false, 0);
+    if (t === nB && nB < H && B.bal > 0){ redeem(B); redeemed = t; }  // only if the horizon outlasts the term
+    if (t % 12 === 0){ annualTax(A); annualTax(B); }
+    rows.push({t, netA:net(A), netB:net(B), totA:net(A) + A.cons, totB:net(B) + B.cons,
+               balB:B.bal, debtB:B.debt, pfB:B.pf - taxr*Math.max(0,B.ug),
+               payA:ma.pay, payB:mb.pay, effA:ma.eff, effB:mb.eff, freedA:ma.freed, freedB:mb.freed,
+               a:snap(A), b:snap(B)});
+  }
+
+  const crossings = (kA, kB) => {
+    const out = [];
+    for (let i = 1; i < rows.length; i++){
+      const p = rows[i-1][kB] - rows[i-1][kA], c = rows[i][kB] - rows[i][kA];
+      if ((p < 0 && c >= 0) || (p > 0 && c <= 0)) out.push((i - 1 + (p === c ? 0 : p/(p - c)))/12);
+    }
+    return out;
+  };
+  const be = crossings('netA', 'netB'), beTot = crossings('totA', 'totB');
+  return {rows, A, B, ydelseA, baseline, payB, payBeff, PB, nA, nB, H, redeemed, be, beTot,
+          taxr, freed1B: rows[1] ? rows[1].freedB : 0, shortfall: B.short};
+}
+
+/* ---- chart -------------------------------------------------------------- */
+const SVGNS = 'http://www.w3.org/2000/svg';
+const W = 760, HT = 340, M = {t:18, r:70, b:30, l:66};
+function el(n, a){ const e = document.createElementNS(SVGNS, n); for (const k in a) e.setAttribute(k, a[k]); return e; }
+function niceStep(range, target){
+  const raw = range/target, mag = Math.pow(10, Math.floor(Math.log10(raw))), n = raw/mag;
+  return (n < 1.5 ? 1 : n < 3 ? 2 : n < 7 ? 5 : 10)*mag;
+}
+let chartState = null;
+
+function drawChart(sim, kA, kB){
+  const svg = $('plot');
+  while (svg.firstChild) svg.removeChild(svg.firstChild);
+  const rows = sim.rows;
+  let lo = 0, hi = 0;
+  for (const r of rows){ lo = Math.min(lo, r[kA], r[kB]); hi = Math.max(hi, r[kA], r[kB]); }
+  if (hi === lo) hi = lo + 1;
+  const pad = (hi - lo)*0.08; lo -= pad; hi += pad;
+  const x = t => M.l + (t/sim.H)*(W - M.l - M.r);
+  const y = v => M.t + (1 - (v - lo)/(hi - lo))*(HT - M.t - M.b);
+  chartState = {sim, x, y, kA, kB};
+
+  // y grid
+  const stepY = niceStep(hi - lo, 5);
+  for (let v = Math.ceil(lo/stepY)*stepY; v <= hi; v += stepY){
+    svg.appendChild(el('line', {class: Math.abs(v) < 1e-6 ? 'zeroline' : 'gridline', x1:M.l, x2:W - M.r, y1:y(v), y2:y(v)}));
+    const lab = el('text', {class:'axis', x:M.l - 8, y:y(v) + 3.5, 'text-anchor':'end'});
+    lab.textContent = axisFmt(v); svg.appendChild(lab);
+  }
+  // x axis
+  const years = sim.H/12, stepX = Math.max(1, niceStep(years, 6));
+  for (let yr = 0; yr <= years + 1e-9; yr += stepX){
+    const lab = el('text', {class:'axis', x:x(yr*12), y:HT - 10, 'text-anchor':'middle'});
+    lab.textContent = 'år ' + nf0.format(yr); svg.appendChild(lab);
+  }
+  // difference band, split into same-sign runs
+  const pts = rows.map(r => ({t:r.t, a:r[kA], b:r[kB], d:r[kB] - r[kA]}));
+  let run = [pts[0]];
+  const flush = arr => {
+    if (arr.length < 2) return;
+    const ahead = arr.reduce((s, p) => s + p.d, 0) >= 0;
+    let dd = 'M' + arr.map(p => x(p.t) + ',' + y(p.b)).join(' L');
+    for (let i = arr.length - 1; i >= 0; i--) dd += ' L' + x(arr[i].t) + ',' + y(arr[i].a);
+    svg.appendChild(el('path', {d: dd + ' Z', fill: ahead ? 'var(--b-soft)' : 'var(--a-soft)', stroke:'none'}));
+  };
+  for (let i = 1; i < pts.length; i++){
+    const prev = pts[i-1], cur = pts[i];
+    if ((prev.d < 0) !== (cur.d < 0)){
+      const f = prev.d === cur.d ? 0 : prev.d/(prev.d - cur.d);
+      const mid = {t: prev.t + f, a: prev.a + f*(cur.a - prev.a), b: prev.b + f*(cur.b - prev.b), d:0};
+      run.push(mid); flush(run); run = [mid, cur];
+    } else run.push(cur);
+  }
+  flush(run);
+  // event markers
+  const mark = (t, text) => {
+    if (t <= 0 || t > sim.H) return;
+    svg.appendChild(el('line', {class:'evt', x1:x(t), x2:x(t), y1:M.t, y2:HT - M.b}));
+    const lab = el('text', {class:'evtlab', x:x(t) + 4, y:M.t + 10});
+    lab.textContent = text; svg.appendChild(lab);
+  };
+  if (sim.redeemed) mark(sim.redeemed, 'indfrielse');
+  mark(sim.nA, 'lånet er væk');
+  // series
+  const line = (key, color) => {
+    const dd = 'M' + rows.map(r => x(r.t) + ',' + y(r[key])).join(' L');
+    svg.appendChild(el('path', {class:'serie', d:dd, stroke:color}));
+  };
+  line(kA, 'var(--a)'); line(kB, 'var(--b)');
+  // end labels
+  const last = rows[rows.length - 1];
+  const endLab = (v, color, text, dy) => {
+    const lab = el('text', {class:'endlab', x:W - M.r + 8, y:y(v) + 3.5 + dy, fill:color});
+    lab.textContent = text; svg.appendChild(lab);
+  };
+  const flip = Math.abs(y(last[kA]) - y(last[kB])) < 14;
+  endLab(last[kA], 'var(--a)', axisFmt(last[kA]), flip && last[kA] < last[kB] ? 7 : 0);
+  endLab(last[kB], 'var(--b)', axisFmt(last[kB]), flip && last[kB] <= last[kA] ? 7 : 0);
+  // hover layer
+  const cross = el('line', {class:'cross', x1:0, x2:0, y1:M.t, y2:HT - M.b, opacity:0});
+  const dA = el('circle', {class:'dot', r:4.5, fill:'var(--a)', opacity:0});
+  const dB = el('circle', {class:'dot', r:4.5, fill:'var(--b)', opacity:0});
+  svg.appendChild(cross); svg.appendChild(dA); svg.appendChild(dB);
+  svg.appendChild(el('rect', {x:M.l, y:M.t, width:W - M.l - M.r, height:HT - M.t - M.b, fill:'transparent', 'pointer-events':'all', id:'hitbox'}));
+  chartState.cross = cross; chartState.dA = dA; chartState.dB = dB;
+}
+
+function bindHover(){
+  const svg = $('plot'), tip = $('tip');
+  const move = ev => {
+    if (!chartState) return;
+    const {sim, x, y, cross, dA, dB, kA, kB} = chartState;
+    const rect = svg.getBoundingClientRect(), k = W/rect.width;
+    const px = (ev.clientX - rect.left)*k;
+    const frac = (px - M.l)/(W - M.l - M.r);
+    const i = Math.max(0, Math.min(sim.rows.length - 1, Math.round(frac*sim.H)));
+    const r = sim.rows[i];
+    cross.setAttribute('x1', x(r.t)); cross.setAttribute('x2', x(r.t)); cross.setAttribute('opacity', .5);
+    dA.setAttribute('cx', x(r.t)); dA.setAttribute('cy', y(r[kA])); dA.setAttribute('opacity', 1);
+    dB.setAttribute('cx', x(r.t)); dB.setAttribute('cy', y(r[kB])); dB.setAttribute('opacity', 1);
+    const yr = r.t/12;
+    tip.innerHTML = '<div class="ty">år ' + nf1.format(yr) + '</div>'
+      + '<div class="row"><span>Behold</span><b>' + krS(r[kA]) + '</b></div>'
+      + '<div class="row"><span>Afdragsfrit</span><b>' + krS(r[kB]) + '</b></div>'
+      + '<div class="row d"><span>Forskel</span><b>' + krSigned(r[kB] - r[kA]) + '</b></div>';
+    const wrapRect = svg.parentElement.getBoundingClientRect();
+    const left = Math.min(wrapRect.width - 200, Math.max(0, x(r.t)/k - 100));
+    tip.style.left = left + 'px';
+    tip.style.top = Math.max(0, y(Math.max(r[kA], r[kB]))/k - 96) + 'px';
+    tip.style.opacity = 1;
+  };
+  svg.addEventListener('pointermove', move);
+  svg.addEventListener('pointerleave', () => {
+    tip.style.opacity = 0;
+    if (chartState){ chartState.cross.setAttribute('opacity', 0); chartState.dA.setAttribute('opacity', 0); chartState.dB.setAttribute('opacity', 0); }
+  });
+}
+
+/* ---- summary bars: formue + opsparing stacked, signed, per scenario ------ */
+function drawBars(last){
+  const parts = s => [['hatch', s.o], ['tint', s.inv], ['solid', s.debt]];
+  const scen = [
+    {name:'Behold lånet', c:'var(--a)', cs:'var(--a-soft)', o:last.a.cons, inv:last.a.pf,
+     debt:-(last.a.bal + last.a.debt), t:last.totA},
+    {name:'Afdragsfrit',  c:'var(--b)', cs:'var(--b-soft)', o:last.b.cons, inv:last.b.pf,
+     debt:-(last.b.bal + last.b.debt), t:last.totB}
+  ];
+  // signed stacking: positives run right from zero, negatives run left from zero
+  const stack = s => {
+    let pos = 0, neg = 0; const out = [];
+    for (const [kind, v] of parts(s)){
+      if (Math.abs(v) < 0.5) continue;
+      if (v > 0){ out.push({kind, lo:pos, hi:pos + v, dir:1, nth:out.filter(o => o.dir === 1).length}); pos += v; }
+      else { out.push({kind, lo:neg + v, hi:neg, dir:-1, nth:out.filter(o => o.dir === -1).length}); neg += v; }
+    }
+    return {segs:out, pos, neg};
+  };
+  const packs = scen.map(stack);
+  let lo = 0, hi = 0;
+  packs.forEach((p, i) => { lo = Math.min(lo, p.neg, scen[i].t); hi = Math.max(hi, p.pos, scen[i].t); });
+  const span = (hi - lo) || 1;
+  lo -= span*0.02; hi += span*0.02;
+  const pct = v => ((v - lo)/(hi - lo))*100;
+
+  $('bars').innerHTML = scen.map((s, i) => {
+    const segs = packs[i].segs.map(g => {
+      const left = pct(g.lo), width = pct(g.hi) - pct(g.lo);
+      const gap = g.nth > 0;                                  // 2px surface gap between stacked segments
+      const l = gap && g.dir === 1 ? 'calc(' + left.toFixed(2) + '% + 2px)' : left.toFixed(2) + '%';
+      const w = gap ? 'calc(' + width.toFixed(2) + '% - 2px)' : width.toFixed(2) + '%';
+      return '<div class="bseg ' + g.kind + '" style="left:' + l + ';width:' + w + '"></div>';
+    }).join('');
+    const zeroLab = i === scen.length - 1
+      ? '<div class="bzerolab" style="left:' + pct(0).toFixed(2) + '%">0</div>' : '';
+    return '<div class="brow' + (zeroLab ? ' lastrow' : '') + '" style="--c:' + s.c + ';--cs:' + s.cs + '">'
+      + '<div class="bname" style="color:' + s.c + '">' + s.name + '</div>'
+      + '<div class="bline"><div class="btrack">'
+      + '<div class="bzero" style="left:' + pct(0).toFixed(2) + '%"></div>' + segs
+      + '<div class="btick" style="left:' + pct(s.t).toFixed(2) + '%"></div>' + zeroLab
+      + '</div><b class="btotal">' + krS(s.t) + '</b></div></div>';
+  }).join('');
+}
+/* ---- render ------------------------------------------------------------- */
+function readInputs(){
+  const num = id => { const v = parseFloat($(id).value); return isFinite(v) ? v : 0; };
+  return {
+    rest:num('rest'), termA:Math.max(1, num('termA')), renteA:num('renteA'), bidragA:num('bidragA'),
+    termB:num('termB'), renteB:num('renteB'), bidragB:num('bidragB'), udb:num('udb'),
+    costs:num('costs'), financed:$('financed').checked,
+    share:num('share'), ret:num('ret'), invtax:num('invtax'), fradrag:num('fradrag'), borrow:num('borrow'),
+    horizon:num('hz'), ydelseU:parseFloat($('ydelseU').value)
+  };
+}
+const warnIcon = '<svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M7 1.2 13 12.4H1L7 1.2Z" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M7 5.4v3.1M7 10.2v.9" stroke="currentColor" stroke-width="1.3"/></svg>';
+
+let measure = 'tot';
+function render(){
+  const inp = readInputs();
+  const sim = simulate(inp);
+  const last = sim.rows[sim.rows.length - 1];
+  const diff = last.netB - last.netA;
+
+  $('termBOut').textContent = nf1.format(inp.termB) + ' år';
+  $('udbOut').textContent   = kr(inp.udb);
+  $('shareOut').textContent = nf0.format(inp.share) + ' %';
+  $('hzOut').textContent    = nf0.format(inp.horizon) + ' år';
+  $('hzLabel').textContent  = nf0.format(inp.horizon);
+
+  const consDiff = sim.B.cons - sim.A.cons;
+  const total = diff + consDiff;
+  $('diff').textContent = krSigned(total);
+  $('whoChip').style.background = total >= 0 ? 'var(--b)' : 'var(--a)';
+  $('whoText').textContent = Math.abs(total) < 1000
+    ? 'De to forløb ender stort set lige'
+    : (total >= 0 ? 'Afdragsfrit ender højest, formue og opsparing tilsammen' : 'At beholde lånet ender højest, formue og opsparing tilsammen');
+  const gA = -(last.a.bal + last.a.debt), gB = -(last.b.bal + last.b.debt);
+  const sumRows = [
+    ['<span class="dot2" style="background:var(--a)"></span>Behold lånet', last.a.cons, last.a.pf, gA, last.totA, ''],
+    ['<span class="dot2" style="background:var(--b)"></span>Afdragsfrit', last.b.cons, last.b.pf, gB, last.totB, ''],
+    ['Forskel', consDiff, last.b.pf - last.a.pf, gB - gA, total, ' class="diff"']
+  ];
+  $('sumBody').innerHTML = sumRows.map(([name, o, inv, g, t, cls]) => {
+    const f = cls ? krNSigned : krN;
+    return '<tr' + cls + '><td>' + name + '</td><td>' + f(o) + '</td><td>' + f(inv) + '</td><td>'
+      + f(g) + '</td><td class="tot">' + f(t) + '</td></tr>';
+  }).join('');
+  drawBars(last);
+
+  $('tYdelse').textContent = kr(sim.ydelseA);
+  $('tYdelseSub').textContent = 'efter fradrag: ' + kr(sim.baseline);
+  $('tPayB').textContent = kr(sim.payB);
+  $('tPayBSub').textContent = 'efter fradrag: ' + kr(sim.payBeff);
+  $('tFreed').textContent = kr(sim.freed1B);
+  const beSel = measure === 'tot' ? sim.beTot : sim.be;
+  $('tBE').textContent = beSel.length ? nf1.format(beSel[0]) + ' år' : 'ingen';
+  $('tBESub').textContent = beSel.length > 1
+    ? 'krydser ' + beSel.length + ' gange, sidst år ' + nf1.format(beSel[beSel.length - 1])
+    : (beSel.length ? (measure === 'tot' ? 'formue + opsparing krydser' : 'formuerne krydser') : 'inden for horisonten');
+
+  // warnings
+  const w = [];
+  if (sim.payBeff > sim.baseline + 0.5){
+    w.push('<b>Den afdragsfrie ydelse er større end den nuværende.</b> ' + kr(sim.payBeff - sim.baseline)
+      + ' pr. måned mere efter fradrag. Modellen lader frigjort likviditet stoppe ved nul og opkræver ikke det overskydende beløb nogen steder, så det afdragsfrie forløb er for optimistisk her — omtrent '
+      + kr((sim.payBeff - sim.baseline)*Math.min(sim.nB, sim.H)) + ' over perioden, før afkast.');
+  }
+  if (isFinite(inp.ydelseU) && inp.ydelseU > 0 && Math.abs(inp.ydelseU - sim.ydelseA)/sim.ydelseA > 0.02){
+    w.push('<b>Din indtastede ydelse afviger fra den beregnede.</b> Du har skrevet ' + kr(inp.ydelseU)
+      + ', annuiteten giver ' + kr(sim.ydelseA) + '. Beregningen bruger den beregnede ydelse — tjek restgæld, restløbetid, rente og bidragssats.');
+  }
+  if (sim.shortfall > 1){
+    w.push('<b>Investeringen kan ikke dække indfrielsen.</b> Der mangler ' + kr(sim.shortfall)
+      + ' ved udløb, som forrentes som kontant gæld til ' + nf1.format(inp.borrow) + ' % og afdrages af den frigjorte likviditet.'
+      + ' Modellen låner ikke om ved udløb — en kortere afdragsfri periode end horisonten betyder derfor, at hele restgælden skal betales af den frigjorte likviditet alene.');
+  }
+  if (inp.horizon*12 > Math.max(sim.nA, sim.nB) + 24){
+    w.push('<b>Horisonten rækker ud over begge lån.</b> Efter det sidste lån er væk investerer begge forløb det samme beløb, så forskellen derefter blot er den tidligere forskel forrentet — et tal langt ude i horisonten er ikke en præcis prognose.');
+  }
+  $('warnings').innerHTML = w.map(t => '<div class="warn">' + warnIcon + '<div>' + t + '</div></div>').join('');
+
+  // per-year deltas from the cumulative snapshots
+  const ZERO = {rente:0, bidrag:0, fradrag:0, inv:0};
+  const yearly = (yr, key) => {
+    const cur = sim.rows[Math.min(sim.rows.length - 1, yr*12)][key];
+    const prev = yr <= 1 ? ZERO : sim.rows[Math.min(sim.rows.length - 1, (yr-1)*12)][key];
+    return {rente:(cur.rente + cur.bidrag) - (prev.rente + prev.bidrag),
+            fradrag:cur.fradrag - prev.fradrag, inv:cur.inv - prev.inv, invTotal:cur.inv};
+  };
+
+  // split table for scenario B
+  const yearsShown = [];
+  const step = inp.horizon <= 12 ? 1 : inp.horizon <= 25 ? 2 : 5;
+  for (let yr = step; yr <= inp.horizon; yr += step) yearsShown.push(yr);
+  if (yearsShown[yearsShown.length - 1] !== inp.horizon) yearsShown.push(inp.horizon);
+  $('splitBody').innerHTML = yearsShown.map(yr => {
+    const r = sim.rows[Math.min(sim.rows.length - 1, yr*12)], yb = yearly(yr, 'b');
+    return '<tr><td>' + nf0.format(yr) + '</td><td class="num">' + krN(-(r.balB + r.debtB)) + '</td><td class="num">'
+      + krN(r.pfB) + '</td><td class="num">' + krN(r.netB) + '</td><td class="num">' + krN(yb.rente)
+      + '</td><td class="num">' + krN(yb.inv) + '</td></tr>';
+  }).join('');
+
+  // cost table
+  const rowsC = [
+    ['Renter i alt', sim.A.rente, sim.B.rente],
+    ['Bidrag i alt', sim.A.bidrag, sim.B.bidrag],
+    ['Rentefradrag', -sim.A.fradrag, -sim.B.fradrag],
+    ['Låneomkostning, netto', sim.A.rente + sim.A.bidrag - sim.A.fradrag, sim.B.rente + sim.B.bidrag - sim.B.fradrag],
+    ['Indbetalt i alt', sim.A.inv, sim.B.inv],
+    ['Opsparing i alt', sim.A.cons, sim.B.cons],
+    ['Formue ved horisonten', last.netA, last.netB],
+    ['Formue + opsparing', last.totA, last.totB]
+  ];
+  $('costBody').innerHTML = rowsC.map(([k, a, b]) =>
+    '<tr><td>' + k + '</td><td class="num">' + krN(a) + '</td><td class="num">' + krN(b) + '</td></tr>').join('');
+
+  // yearly table
+  let tb = '';
+  for (let yr = 1; yr <= inp.horizon; yr++){
+    const r = sim.rows[Math.min(sim.rows.length - 1, yr*12)];
+    const ya = yearly(yr, 'a'), yb = yearly(yr, 'b');
+    tb += '<tr><td>' + nf0.format(yr) + '</td>'
+       + '<td class="num">' + krN(r.payA) + '</td><td class="num">' + krN(ya.rente) + '</td><td class="num">' + krN(ya.fradrag)
+       + '</td><td class="num">' + krN(ya.inv) + '</td><td class="num">' + krN(ya.invTotal) + '</td><td class="num">' + krN(r.netA) + '</td>'
+       + '<td class="num">' + krN(r.payB) + '</td><td class="num">' + krN(yb.rente) + '</td><td class="num">' + krN(yb.fradrag)
+       + '</td><td class="num">' + krN(yb.inv) + '</td><td class="num">' + krN(yb.invTotal) + '</td><td class="num">' + krN(r.netB) + '</td>'
+       + '<td class="num">' + krNSigned(r.netB - r.netA) + '</td><td class="num">' + krNSigned(r.totB - r.totA) + '</td></tr>';
+  }
+  $('tblBody').innerHTML = tb;
+
+  $('chartTitle').textContent = measure === 'tot' ? 'Formue og opsparing over tid' : 'Formue over tid';
+  drawChart(sim, measure === 'tot' ? 'totA' : 'netA', measure === 'tot' ? 'totB' : 'netB');
+  window.__sim = sim;
+}
+
+document.querySelectorAll('.segbtn').forEach(b => b.addEventListener('click', () => {
+  measure = b.dataset.m;
+  document.querySelectorAll('.segbtn').forEach(o => o.setAttribute('aria-pressed', String(o === b)));
+  render();
+}));
+document.querySelectorAll('input').forEach(i => {
+  i.addEventListener('input', render);
+  i.addEventListener('change', render);
+});
+$('tblBtn').addEventListener('click', () => {
+  const box = $('tblBox'), open = !box.hidden;
+  box.hidden = open;
+  $('tblBtn').setAttribute('aria-expanded', String(!open));
+  $('tblBtn').textContent = open ? 'Vis tabel' : 'Skjul tabel';
+});
+bindHover();
+render();
+window.addEventListener('resize', () => { if (window.__sim) drawChart(window.__sim, measure === 'tot' ? 'totA' : 'netA', measure === 'tot' ? 'totB' : 'netB'); });
+window.simulate = simulate;
+})();
+</script>

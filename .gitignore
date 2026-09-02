@@ -1,0 +1,5 @@
+.DS_Store
+
+# Unrelated files that live in this folder but are not part of this project
+deck-cut-plan.html
+deck-cut-plan.md
