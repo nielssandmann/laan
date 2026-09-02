@@ -20,6 +20,20 @@ The file is written to be publishable as an Artifact, so it deliberately has no
 `<style>` sit at the top of the file. It still renders correctly as a local file.
 Republish with the Artifact tool using the same file path to keep the URL.
 
+## Hosting
+
+`index.html` is served by GitHub Pages at https://nielssandmann.github.io/laan/ and is
+**generated — never edit it**. Edit `realkredit-omlaegning.html`, then run:
+
+    ./build-index.sh
+
+and commit both. The script wraps the artifact-shaped source in a real document: the
+source's `<title>`, font links and `<style>` move into a proper `<head>`, and the head
+also restores the two things the Artifact host normally injects and the page relies on —
+the viewport meta (without it the page loads zoomed out on a phone) and
+`[hidden]{display:none!important}` (the plain UA rule loses to `.card-body`'s
+`display:flex`, so the yearly table would sit open on load). Pushing to `main` redeploys.
+
 ## Model conventions
 
 These are decisions layered on top of the spec. Changing one changes every headline
